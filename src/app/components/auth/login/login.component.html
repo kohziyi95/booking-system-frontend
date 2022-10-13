@@ -1,0 +1,71 @@
+<div class="col-md-12 d-flex justify-content-center">
+  <div class="card card-container align-items-center p-3 pt-4 pb-4">
+    <h1 class="card-title">Login</h1>
+    <form [formGroup]="formGroup" class="mt-3" (ngSubmit)="processLogin()">
+      <!-- <table>
+          <tr>
+            <td>
+              <label for="username">Username:</label>
+            </td>
+            <td>
+              <input type="text" formControlName="username" />
+            </td>
+          </tr>
+          <tr>
+            <td><label for="email">Email:</label></td>
+            <td><input type="email" formControlName="email" /></td>
+          </tr>
+          <tr>
+            <td><label for="password">Password:</label></td>
+            <td><input type="password" formControlName="password" /></td>
+          </tr>
+          <tr>
+            <td>
+              <label for="confirmPassword">Confirm Password:</label>
+            </td>
+            <td><input type="password" formControlName="confirmPassword" /></td>
+          </tr>
+        </table> -->
+      <div class="d-flex flex-column">
+        <input
+          class="m-2 mt-0 p-1 text-center"
+          type="text"
+          formControlName="username"
+          placeholder="Username"
+        />
+        <input
+          class="m-2 p-1 text-center"
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+        />
+        <input
+          class="m-2 p-1 text-center"
+          type="password"
+          formControlName="password"
+          placeholder="Password"
+        />
+      </div>
+
+      <div class="d-flex flex-row justify-content-center">
+        <h5 class="text-danger mt-3" *ngIf="errorMessage != ''">
+          {{ errorMessage }}
+        </h5>
+      </div>
+      <div class="d-flex flex-row justify-content-center" >
+        <button
+          class="btn btn-primary mt-2"
+          type="submit"
+          [disabled]="formGroup.invalid"
+        >
+          Login
+        </button>
+      </div>
+    </form>
+    <p class="mt-4">
+      If you do not have an existing account, click
+      <a [routerLink]="['/auth/register']" class="text-primary">here</a> to
+      register.
+    </p>
+  </div>
+</div>

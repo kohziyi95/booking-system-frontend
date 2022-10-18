@@ -1,26 +1,27 @@
 <mat-toolbar color="primary">
+  <span>Booking System</span>
+  <span class="example-spacer"></span>
+  <div *ngIf="roles">
     <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon fontIcon="menu"></mat-icon>
-      </button>
+      <mat-icon>menu</mat-icon>
+    </button>
     <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>dialpad</mat-icon>
-          <span>Redial</span>
-        </button>
-        <button mat-menu-item disabled>
-          <mat-icon>voicemail</mat-icon>
-          <span>Check voice mail</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>notifications_off</mat-icon>
-          <span>Disable alerts</span>
-        </button>
-      </mat-menu>
-    <span>Booking System</span>
-    <span class="example-spacer"></span>
-  </mat-toolbar>
-<div class="container">
-<div class="display-4 text-center m-3" >Hello</div>
-<router-outlet></router-outlet>
-
+      <button mat-menu-item *ngIf="isAdmin()" routerLink="/admin/dashboard">
+        <span>Admin</span>
+      </button>
+      <button mat-menu-item>
+        <span>Your Classes</span>
+      </button>
+      <button mat-menu-item>
+        <span>Account</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+<div class="container m-3">
+  <!-- <div class="display-4 text-center m-3 ">Hello</div> -->
+  <router-outlet></router-outlet>
 </div>

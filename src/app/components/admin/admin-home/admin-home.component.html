@@ -1,0 +1,18 @@
+<div class="display-4 text-center m-4">Admin Dashboard</div>
+<div *ngIf="!isAdmin()">
+  <h1>Error. You are not authorised to view this page.</h1>
+</div>
+<div class="container" *ngIf="isAdmin()">
+  <div class="row justify-content-center">
+    <div class="col-sm-6 d-flex justify-content-center mb-3">
+      <button mat-stroked-button color="primary" class="p-4 w-100" routerLink="/admin/event/list">
+        View Events
+      </button>
+    </div>
+    <div class="col-sm-6 d-flex justify-content-center mb-3">
+      <button mat-stroked-button color="primary" class="p-4 w-100" routerLink="/admin/add/event">
+        Add Events
+      </button>
+    </div>
+  </div>
+</div>

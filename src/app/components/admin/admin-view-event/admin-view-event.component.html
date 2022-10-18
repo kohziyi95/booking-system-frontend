@@ -1,0 +1,32 @@
+<div *ngFor="let e of eventList">
+  <mat-card class="row d-flex flex-row justify-content-evenly mb-3">
+    <div class="col-3 vertical_align_center">
+      <img [src]="getImageFromBase64(e.image)" mat-card-image />
+    </div>
+    <div class="col-8">
+      <mat-card-title class="text-capitalize">
+        {{ e.title }}
+      </mat-card-title>
+      <mat-card-content>
+        <p><span class="fw-bold">Description:</span> {{ e.description }}</p>
+        <p>
+          <span class="fw-bold">Date:</span> {{ e.date }} /
+          <span class="fw-bold">Time:</span> {{ e.startTime }} to
+          {{ e.endTime }}
+        </p>
+        <p>
+          <span class="fw-bold">Price:</span> {{ e.price }} /
+          <span class="fw-bold">Capacity: </span>{{ e.capacity }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="accent">
+            View Bookings
+          </button>
+          <button mat-raised-button color="warn">
+            Delete Event
+          </button>
+      </mat-card-actions>
+    </div>
+  </mat-card>
+</div>

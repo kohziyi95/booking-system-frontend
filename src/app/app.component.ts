@@ -23,6 +23,10 @@ export class AppComponent {
     return this.roles?.includes("ROLE_ADMIN");
   }
 
+  isUser():boolean | undefined {
+    return this.roles?.includes("ROLE_USER") && !this.roles?.includes("ROLE_ADMIN");
+  }
+
   logout(): void {
     this.authService.logout().subscribe({
       next: res => {

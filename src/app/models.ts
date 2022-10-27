@@ -1,4 +1,5 @@
 export interface EventDetails {
+  id:number;
   date: string;
   days: string;
   description: string;

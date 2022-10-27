@@ -1,31 +1,56 @@
+<div class="d-flex justify-content-center m-3">
+  <mat-button-toggle-group name="eventType">
+    <mat-button-toggle value="all" checked (click)="showAllEvents()">
+      All Events
+    </mat-button-toggle>
+    <mat-button-toggle value="single" (click)="showSingleEvent()">
+      Single Day Events
+    </mat-button-toggle>
+    <mat-button-toggle value="multiple" (click)="showMultipleEvent()">
+      Multiple Day Events
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+<div *ngIf="eventList.length == 0">
+  <mat-card class="d-flex flex-column justify-content-evenly mt-3 mb-3">
+    <mat-card-title class="text-center m-3">
+      No events found.
+    </mat-card-title>
+    <mat-card-actions class="d-flex justify-content-center m-3">
+      <button mat-raised-button color="primary" [routerLink]="['/admin/add/event']" >Add an Event</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
 <div *ngFor="let e of eventList">
   <mat-card class="row d-flex flex-row justify-content-evenly mb-3">
-    <div class="col-3 vertical_align_center">
+    <div class="col-3 d-flex align-items-center">
       <img [src]="getImageFromBase64(e.image)" mat-card-image />
     </div>
-    <div class="col-8">
-      <mat-card-title class="text-capitalize">
+    <div class="col-7">
+      <mat-card-title class="text-capitalize mb-3">
         {{ e.title }}
       </mat-card-title>
       <mat-card-content>
         <p><span class="fw-bold">Description:</span> {{ e.description }}</p>
-        <p>
-          <span class="fw-bold">Date:</span> {{ e.date }} /
+        <p *ngIf="isSingleEvent(e)">
+          <span class="fw-bold">Date:</span> {{ e.date }}
+        </p>
+        <p *ngIf="isSingleEvent(e)">
           <span class="fw-bold">Time:</span> {{ e.startTime }} to
           {{ e.endTime }}
         </p>
+        <p *ngIf="isMultipleEvent(e)">
+          <span class="fw-bold">Time:</span> {{ e.startDate }} to
+          {{ e.endDate }}
+        </p>
         <p>
-          <span class="fw-bold">Price:</span> {{ e.price }} /
+          <span class="fw-bold">Price:</span> ${{ e.price.toFixed(2) }} /
           <span class="fw-bold">Capacity: </span>{{ e.capacity }}
         </p>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="accent">
-            View Bookings
-          </button>
-          <button mat-raised-button color="warn">
-            Delete Event
-          </button>
+        <button mat-raised-button color="accent">View Bookings</button>
+        <button mat-raised-button color="warn" (click)="deleteEvent(e.id)">Delete Event</button>
       </mat-card-actions>
     </div>
   </mat-card>

@@ -29,7 +29,21 @@ export class AdminService {
   }
 
   public getSingleEvent():Observable<EventDetails[]>{
-    // const params = new HttpParams().set('days', 'single')
     return (this.http.get<EventDetails[]>('/api/event/single')).pipe();
   }
+
+  public getMultipleEvent():Observable<EventDetails[]>{
+    return (this.http.get<EventDetails[]>('/api/event/multiple')).pipe();
+  }
+
+  public getAllEvents():Observable<EventDetails[]>{
+    return (this.http.get<EventDetails[]>('/api/event/all')).pipe();
+  }
+
+  public deleteEvent(id:number):Observable<EventDetails[]>{
+    return (this.http.delete<EventDetails[]>(`/api/event/${id}`)).pipe();
+  }
+
+
+
 }

@@ -9,7 +9,7 @@
       <button mat-menu-item *ngIf="isAdmin()" routerLink="/admin/dashboard">
         <span>Admin</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item *ngIf="isUser()">
         <span>Your Classes</span>
       </button>
       <button mat-menu-item>

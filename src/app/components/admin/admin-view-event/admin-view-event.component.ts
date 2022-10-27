@@ -1,7 +1,7 @@
+import { EventDetails } from './../../../models';
 import { AdminService } from './../../../services/admin.service';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { EventDetails } from 'src/app/models';
 
 @Component({
   selector: 'app-admin-view-event',
@@ -14,21 +14,85 @@ export class AdminViewEventComponent implements OnInit {
     private _sanitizer: DomSanitizer
   ) {}
   imagePath!: any;
-  eventList!:EventDetails[];
+  eventList!: EventDetails[];
+  currentEventList!: String;
 
   ngOnInit(): void {
-    this.showSingleEvent();
+    this.showAllEvents();
   }
+
+  // ngAfterViewInit(): void {
+  //   switch (this.currentEventList) {
+  //     case 'all':
+  //       this.showAllEvents();
+  //       break;
+  //     case 'single':
+  //       this.showSingleEvent();
+  //       break;
+  //     case 'multiple':
+  //       this.showMultipleEvent();
+  //       break;
+  //     default:
+  //       this.showAllEvents();
+  //       break;
+  //   }
+  // }
 
   showSingleEvent() {
     this.adminService.getSingleEvent().subscribe((data) => {
-      console.info(data); 
-      this.eventList=data as EventDetails[];
+      console.info('Showing single day events: ', data);
+      this.eventList = data as EventDetails[];
+      this.currentEventList = 'single';
     });
   }
 
-  getImageFromBase64(base64String:String){
-    return this._sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' 
-    + base64String);
+  showMultipleEvent() {
+    this.adminService.getMultipleEvent().subscribe((data) => {
+      console.info('Showing multiple day events: ', data);
+      this.eventList = data as EventDetails[];
+      this.currentEventList = 'multiple';
+    });
+  }
+
+  showAllEvents() {
+    this.adminService.getAllEvents().subscribe((data) => {
+      console.info('Showing all events: ', data);
+      this.eventList = data as EventDetails[];
+      this.currentEventList = 'all';
+    });
+  }
+
+  deleteEvent(id: number) {
+    this.adminService.deleteEvent(id).subscribe((data) => {
+      console.info('Deleted event id: ', data);
+      switch (this.currentEventList) {
+        case 'all':
+          this.showAllEvents();
+          break;
+        case 'single':
+          this.showSingleEvent();
+          break;
+        case 'multiple':
+          this.showMultipleEvent();
+          break;
+        default:
+          this.showAllEvents();
+          break;
+      }
+    });
+  }
+
+  isSingleEvent(e: EventDetails): boolean {
+    return e.days == 'single';
+  }
+
+  isMultipleEvent(e: EventDetails): boolean {
+    return e.days == 'multiple';
+  }
+
+  getImageFromBase64(base64String: String) {
+    return this._sanitizer.bypassSecurityTrustResourceUrl(
+      'data:image/jpg;base64,' + base64String
+    );
   }
 }

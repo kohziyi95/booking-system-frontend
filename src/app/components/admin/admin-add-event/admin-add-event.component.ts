@@ -108,6 +108,7 @@ export class AdminAddEventComponent implements OnInit {
   resetForm() {
     this.newEventForm = this.createForm();
     this.eventAdded = false;
+    this.formSubmitted = false;
     this.eventDetails = this.newEventForm.value as EventDetails;
   }
 }

@@ -3,14 +3,14 @@
 </div>
 <div *ngIf="isAdmin()">
   <div class="text-center">
-    <h1>Add A New Event</h1>
+    <h1>Edit Event</h1>
   </div>
   <form
     [formGroup]="newEventForm"
     (ngSubmit)="processForm()"
     *ngIf="formSubmitted == false"
   >
-    <div class="d-flex justify-content-center flex-column">
+    <div class="d-flex justify-content-center flex-column pb-4">
       <mat-form-field appearance="outline">
         <mat-label>Event Title</mat-label>
         <input
@@ -45,7 +45,8 @@
         class="example-form-field"
         *ngIf="isSingleDayEvent()"
       >
-        <mat-label>Choose a date</mat-label>
+        <!-- <h4>Date: {{ this.eventDetails.date }}</h4> -->
+        <mat-label>{{ this.eventDetails.date }} </mat-label>
         <input matInput [matDatepicker]="datepicker" formControlName="date" />
         <mat-hint>MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle
@@ -67,7 +68,10 @@
         class="mb-3"
         *ngIf="!isSingleDayEvent()"
       >
-        <mat-label>Enter a date range</mat-label>
+        <mat-label
+          >{{ this.eventDetails.startDate }} to
+          {{ this.eventDetails.endDate }}</mat-label
+        >
         <mat-date-range-input [rangePicker]="rangePicker">
           <input
             matStartDate
@@ -91,6 +95,10 @@
         </mat-date-range-picker>
       </mat-form-field>
 
+      <p class="mb-0 mt-4 ps-2" style="fontSize:1rem" *ngIf="isSingleDayEvent()">
+        Event Timing: {{ this.eventDetails.startTime }} to
+        {{ this.eventDetails.endTime }} 
+      </p>
       <div class="d-flex justify-content-evenly" *ngIf="isSingleDayEvent()">
         <mat-form-field>
           <mat-label>Start Time</mat-label>
@@ -112,13 +120,13 @@
       </div>
 
       <!-- <mat-form-field appearance="outline" *ngIf="isSingleDayEvent()">
-        <mat-label>Frequency</mat-label>
-        <mat-select formControlName="frequency">
-          <mat-option value="once">Once</mat-option>
-          <mat-option value="daily">Daily</mat-option>
-          <mat-option value="weekly">Weekly</mat-option>
-        </mat-select>
-      </mat-form-field> -->
+          <mat-label>Frequency</mat-label>
+          <mat-select formControlName="frequency">
+            <mat-option value="once">Once</mat-option>
+            <mat-option value="daily">Daily</mat-option>
+            <mat-option value="weekly">Weekly</mat-option>
+          </mat-select>
+        </mat-form-field> -->
 
       <mat-form-field appearance="outline">
         <mat-label>Event Price ($)</mat-label>
@@ -142,6 +150,13 @@
 
       <mat-form-field>
         <mat-label>Upload Event Image</mat-label>
+        <div class="ps-2">
+          <img
+            [src]="getImageFromBase64(this.eventDetails.image)"
+            mat-card-image
+            class="w-25 mt-4"
+          />
+        </div>
         <input matInput class="m-1" disabled="true" />
         <input type="file" formControlName="image" #toUpload />
       </mat-form-field>
@@ -152,7 +167,7 @@
     </div>
   </form>
   <div *ngIf="formSubmitted">
-    <div class="alert alert-success text-center" *ngIf="eventAdded">
+    <div class="alert alert-success text-center" *ngIf="eventEdited">
       <h1>Event Added!</h1>
       <mat-list>
         <mat-list-item> Title: {{ eventDetails.title }} </mat-list-item>
@@ -179,15 +194,12 @@
         </mat-list-item>
       </mat-list>
     </div>
-    <div
-      class="alert alert-danger text-center"
-      *ngIf="eventAdded == false"
-    >
+    <div class="alert alert-danger text-center" *ngIf="eventEdited == false">
       <h1>Failed to add event.</h1>
       <h3>{{ errorMessage }}</h3>
     </div>
     <div class="d-flex justify-content-evenly">
-      <button mat-raised-button color="accent" [routerLink]="['/admin/event/add']">
+      <button mat-raised-button color="accent" (click)="resetForm()">
         Add Another Event
       </button>
       <button

@@ -1,0 +1,48 @@
+<div class="display-6 text-center m-4">Your Bookings</div>
+<div *ngIf="eventList.length == 0">
+  <mat-card class="d-flex flex-column justify-content-evenly mt-3 mb-3">
+    <mat-card-title class="text-center m-3"> No events found. </mat-card-title>
+  </mat-card>
+</div>
+
+<div *ngIf="eventList.length > 0" class="text-center m-3 h4">
+  You have {{ eventList.length }} upcoming bookings.
+</div>
+
+<div *ngFor="let e of eventList">
+  <mat-card class="row d-flex flex-row justify-content-evenly mb-3">
+    <div class="col-3 d-flex align-items-center">
+      <img [src]="getImageFromBase64(e.image)" mat-card-image />
+    </div>
+    <div class="col-7">
+      <mat-card-title class="text-capitalize mb-3">
+        {{ e.title }}
+      </mat-card-title>
+      <mat-card-content>
+        <p><span class="fw-bold">Description:</span> {{ e.description }}</p>
+        <p *ngIf="isSingleEvent(e)">
+          <span class="fw-bold">Date:</span> {{ e.date }}
+        </p>
+        <p *ngIf="isSingleEvent(e)">
+          <span class="fw-bold">Time:</span> {{ e.startTime }} to
+          {{ e.endTime }}
+        </p>
+        <p *ngIf="isMultipleEvent(e)">
+          <span class="fw-bold">Time:</span> {{ e.startDate }} to
+          {{ e.endDate }}
+        </p>
+        <p><span class="fw-bold">Price:</span> ${{ e.price.toFixed(2) }}</p>
+        <p>
+          <span class="fw-bold">Capacity: </span>
+          {{ e.capacity }}
+        </p>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="isUser()">
+        <button mat-raised-button color="warn" (click)="cancelBooking(e)">
+          Cancel Booking
+        </button>
+      </mat-card-actions>
+    </div>
+  </mat-card>
+</div>

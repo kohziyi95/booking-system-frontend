@@ -1,8 +1,8 @@
-<div class="display-4 text-center m-4">Admin Dashboard</div>
-<div *ngIf="!isAdmin()">
+<div class="display-4 text-center m-4">Dashboard</div>
+<div *ngIf="!isUser()">
   <h1>Error. You are not authorised to view this page.</h1>
 </div>
-<div class="container" *ngIf="isAdmin()">
+<div class="container" *ngIf="isUser()">
   <div class="row justify-content-center">
     <div class="col-sm-6 d-flex justify-content-center mb-3">
       <button mat-stroked-button color="primary" class="p-4 w-100" routerLink="/event/list">
@@ -10,8 +10,8 @@
       </button>
     </div>
     <div class="col-sm-6 d-flex justify-content-center mb-3">
-      <button mat-stroked-button color="primary" class="p-4 w-100" routerLink="/admin/event/add">
-        Add Events
+      <button mat-stroked-button color="primary" class="p-4 w-100" routerLink="/bookings">
+        View Bookings
       </button>
     </div>
   </div>

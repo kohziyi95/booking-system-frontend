@@ -13,11 +13,15 @@
 </div>
 <div *ngIf="eventList.length == 0">
   <mat-card class="d-flex flex-column justify-content-evenly mt-3 mb-3">
-    <mat-card-title class="text-center m-3">
-      No events found.
-    </mat-card-title>
+    <mat-card-title class="text-center m-3"> No events found. </mat-card-title>
     <mat-card-actions class="d-flex justify-content-center m-3">
-      <button mat-raised-button color="primary" [routerLink]="['/admin/add/event']" >Add an Event</button>
+      <button
+        mat-raised-button
+        color="primary"
+        [routerLink]="['/admin/event/add']"
+      >
+        Add an Event
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -43,14 +47,41 @@
           <span class="fw-bold">Time:</span> {{ e.startDate }} to
           {{ e.endDate }}
         </p>
+        <p><span class="fw-bold">Price:</span> ${{ e.price.toFixed(2) }}</p>
         <p>
-          <span class="fw-bold">Price:</span> ${{ e.price.toFixed(2) }} /
-          <span class="fw-bold">Capacity: </span>{{ e.capacity }}
+          <span class="fw-bold">Capacity: </span>{{ remainingSlots(e) }} /
+          {{ e.capacity }}
+        </p>
+        <p *ngIf="isUser()">
+          <!-- <span class="fw-bold">Slots Left:</span> {{ remainingSlots(e) }} / {{ e.capacity }} -->
         </p>
       </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button color="accent">View Bookings</button>
-        <button mat-raised-button color="warn" (click)="deleteEvent(e.id)">Delete Event</button>
+      <mat-card-actions *ngIf="isAdmin()" class="">
+        <button mat-raised-button color="accent" (click)="editEvent(e.id)">
+          Edit
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteEvent(e.id)">
+          Delete
+        </button>
+      </mat-card-actions>
+      <mat-card-actions *ngIf="isUser()">
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="bookEvent(e.id)"
+          [disabled]="e.capacity == e.bookingCount"
+          *ngIf="!bookingExists(e)"
+        >
+          Book Now
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="cancelBooking(e)"
+          *ngIf="bookingExists(e)"
+        >
+          Cancel Booking
+        </button>
       </mat-card-actions>
     </div>
   </mat-card>

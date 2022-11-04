@@ -33,14 +33,20 @@ import { MatCard, MatCardModule } from '@angular/material/card';
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AdminAddEventComponent } from './components/admin/admin-add-event/admin-add-event.component';
 import { AdminViewEventComponent } from './components/admin/admin-view-event/admin-view-event.component';
+import { AdminEditEventComponent } from './components/admin/admin-edit-event/admin-edit-event.component';
+import { DashboardComponent } from './components/user/dashboard/dashboard.component';
+import { ViewBookingsComponent } from './components/user/view-bookings/view-bookings.component';
 
 const appRoutes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'admin/dashboard', component: AdminHomeComponent },
-  { path: 'admin/add/event', component: AdminAddEventComponent },
-  { path: 'admin/event/list', component: AdminViewEventComponent },
-  { path: '**', redirectTo: '/', pathMatch: 'full' },
+  { path: 'admin/event/add', component: AdminAddEventComponent },
+  { path: 'admin/event/edit/:id', component: AdminEditEventComponent },
+  { path: 'event/list', component: AdminViewEventComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'bookings', component: ViewBookingsComponent },
+  { path: '**', redirectTo: 'auth/login', pathMatch: 'full' },
 ];
 @NgModule({
   declarations: [
@@ -50,6 +56,9 @@ const appRoutes: Routes = [
     AdminHomeComponent,
     AdminAddEventComponent,
     AdminViewEventComponent,
+    AdminEditEventComponent,
+    DashboardComponent,
+    ViewBookingsComponent,
   ],
   imports: [
     BrowserModule,

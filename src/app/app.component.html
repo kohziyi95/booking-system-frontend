@@ -9,12 +9,15 @@
       <button mat-menu-item *ngIf="isAdmin()" routerLink="/admin/dashboard">
         <span>Admin</span>
       </button>
-      <button mat-menu-item *ngIf="isUser()">
-        <span>Your Classes</span>
+      <button mat-menu-item *ngIf="isUser()" routerLink="/dashboard">
+        <span>Dashboard</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item *ngIf="isUser()" routerLink="/bookings">
+        <span>Your Bookings</span>
+      </button>
+      <!-- <button mat-menu-item>
         <span>Account</span>
-      </button>
+      </button> -->
       <button mat-menu-item (click)="logout()">
         <span>Logout</span>
       </button>

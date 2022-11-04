@@ -11,4 +11,11 @@ export interface EventDetails {
   title: string;
   price: number;
   capacity: number;
+  bookingCount: number;
+}
+
+export interface EventBooking {
+  bookingId: string;
+  eventId: number;
+  userId: number;
 }

@@ -36,6 +36,7 @@ import { AdminViewEventComponent } from './components/admin/admin-view-event/adm
 import { AdminEditEventComponent } from './components/admin/admin-edit-event/admin-edit-event.component';
 import { DashboardComponent } from './components/user/dashboard/dashboard.component';
 import { ViewBookingsComponent } from './components/user/view-bookings/view-bookings.component';
+import { CreditsComponent } from './components/user/credits/credits.component';
 
 const appRoutes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -46,6 +47,7 @@ const appRoutes: Routes = [
   { path: 'event/list', component: AdminViewEventComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'bookings', component: ViewBookingsComponent },
+  // { path: 'credits', component: CreditsComponent },
   { path: '**', redirectTo: 'auth/login', pathMatch: 'full' },
 ];
 @NgModule({
@@ -59,6 +61,7 @@ const appRoutes: Routes = [
     AdminEditEventComponent,
     DashboardComponent,
     ViewBookingsComponent,
+    CreditsComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +86,7 @@ const appRoutes: Routes = [
     // NgxMatNativeDateModule,
     NgxMaterialTimepickerModule,
     MatListModule,
-    MatCardModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent],

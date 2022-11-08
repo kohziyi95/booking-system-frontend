@@ -1,10 +1,11 @@
 import { BookingService } from './../../../services/booking.service';
-import { EventDetails, EventBooking } from './../../../models';
+import { EventDetails, EventBooking, EmailDetails } from './../../../models';
 import { AdminService } from './../../../services/admin.service';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StorageService } from 'src/app/services/storage.service';
 import { Router } from '@angular/router';
+import { EmailService } from 'src/app/services/email.service';
 
 @Component({
   selector: 'app-admin-view-event',
@@ -17,6 +18,7 @@ export class AdminViewEventComponent implements OnInit {
     private bookingService: BookingService,
     private _sanitizer: DomSanitizer,
     private storageService: StorageService,
+    private emailService: EmailService,
     private router: Router
   ) {}
   imagePath!: any;
@@ -136,9 +138,11 @@ export class AdminViewEventComponent implements OnInit {
     return bookingExists;
   }
 
-  bookEvent(id: number) {
+  bookEvent(event: EventDetails) {
+    const id = event.id;
     console.log('Booking Event Id: ', id);
-    const userId = this.storageService.getUser().id;
+    const currentUser = this.storageService.getUser();
+    const userId = currentUser.id;
     console.log('User Id: ', userId);
     let bookingId!: string;
     this.bookingService
@@ -146,13 +150,31 @@ export class AdminViewEventComponent implements OnInit {
       .then((data) => {
         console.log('Booking data >>>>>>>>>>> ', data);
         bookingId = data as string;
-        window.location.reload();
-        this.reload();
+
+        let emailDetails: EmailDetails = {
+          recipient: currentUser.email,
+          msgBody: `Dear ${currentUser.username}, \n 
+          Your booking of the event ${event.title} has been confirmed. \n
+          Your booking id is: ${bookingId} \n
+          Thank you for booking with us.\n
+          \n
+          Regards,\n
+          Booking System Admin`,
+          subject: `Your Booking Has Been Confirmed: ${bookingId}`,
+        };
+        this.emailService.sendConfirmationEmail(emailDetails).then((data) => {
+          console.log('Email Details: ', emailDetails);
+          console.log('Email status: ', data);
+          alert(`Email Status:  ${data} \n
+          ${emailDetails.msgBody}`);
+          window.location.reload();
+          this.reload();
+        });
       })
       .catch((error) => {
         console.error(error);
       });
-  }  
+  }
 
   cancelBooking(event: EventDetails) {
     let bookingId!: string;

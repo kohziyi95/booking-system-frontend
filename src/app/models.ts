@@ -19,3 +19,9 @@ export interface EventBooking {
   eventId: number;
   userId: number;
 }
+
+export interface EmailDetails {
+  recipient: string;
+  msgBody: string;
+  subject: string;
+}

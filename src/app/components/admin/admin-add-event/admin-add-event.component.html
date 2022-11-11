@@ -173,7 +173,7 @@
         <mat-list-item *ngIf="eventDetails.days == 'multiple'">
           Ending Date: {{ eventDetails.endDate }}
         </mat-list-item>
-        <mat-list-item> Price: ${{ eventDetails.price }} </mat-list-item>
+        <mat-list-item> Price: ${{ eventDetails.price.toFixed(2) }} </mat-list-item>
         <mat-list-item>
           Max. Capacity: {{ eventDetails.capacity }}
         </mat-list-item>
@@ -187,7 +187,7 @@
       <h3>{{ errorMessage }}</h3>
     </div>
     <div class="d-flex justify-content-evenly">
-      <button mat-raised-button color="accent" [routerLink]="['/admin/event/add']">
+      <button mat-raised-button color="accent" (click)="refreshPage()">
         Add Another Event
       </button>
       <button

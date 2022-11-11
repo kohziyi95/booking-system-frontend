@@ -188,7 +188,7 @@
         <mat-list-item *ngIf="eventDetails.days == 'multiple'">
           Ending Date: {{ eventDetails.endDate }}
         </mat-list-item>
-        <mat-list-item> Price: ${{ eventDetails.price }} </mat-list-item>
+        <mat-list-item> Price: ${{ eventDetails.price.toFixed(2) }} </mat-list-item>
         <mat-list-item>
           Max. Capacity: {{ eventDetails.capacity }}
         </mat-list-item>

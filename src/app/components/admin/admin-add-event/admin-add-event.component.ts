@@ -111,4 +111,8 @@ export class AdminAddEventComponent implements OnInit {
     this.formSubmitted = false;
     this.eventDetails = this.newEventForm.value as EventDetails;
   }
+
+  refreshPage(){
+    window.location.reload();
+  }
 }

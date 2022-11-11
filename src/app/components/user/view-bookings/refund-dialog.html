@@ -1,0 +1,36 @@
+<div *ngIf="data.refundFailed">
+  <h1 class="text-center">Cancellation of Booking Failed.</h1>
+  <div mat-dialog-content class="text-center">{{ data.errorMessage }}</div>
+  <div mat-dialog-actions class="d-flex justify-content-center">
+    <button
+      mat-raised-button
+      mat-dialog-close
+      color="accent"
+      (click)="reload()"
+    >
+      Close
+    </button>
+    <!-- <button mat-raised-button mat-dialog-close color="warn">Cancel</button> -->
+  </div>
+</div>
+
+<div *ngIf="!data.refundFailed">
+  <h1 class="text-center">Booking Cancelled</h1>
+  <p mat-dialog-content class="text-center"></p>
+
+  <div mat-dialog-content class="text-center mt-3">
+    <p>Your Booking {{ data.bookingId }} has been successfully cancelled.</p>
+    <p>Your credits will be refunded to your wallet.</p>
+  </div>
+  <div mat-dialog-actions class="d-flex justify-content-center mt-3">
+    <button
+      mat-raised-button
+      mat-dialog-close
+      color="accent"
+      (click)="reload()"
+    >
+      Close
+    </button>
+    <!-- <button mat-raised-button mat-dialog-close color="warn">Cancel</button> -->
+  </div>
+</div>

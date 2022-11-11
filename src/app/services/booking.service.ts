@@ -14,7 +14,7 @@ export class BookingService {
       this.http.post(
         `/api/event/${eventId}/book`,
         { userId: userId },
-        { responseType: 'text' }
+        // { responseType: 'text' }
       )
     );
   }
@@ -25,10 +25,9 @@ export class BookingService {
       .pipe();
   }
 
-  public deleteBookingByBookingId(bookingId: string): Observable<string> {
-    return this.http
-      .delete(`/api/event/bookings/${bookingId}`, { responseType: 'text' })
-      .pipe();
+  public deleteBookingByBookingId(bookingId: string){
+    return firstValueFrom(this.http
+      .delete(`/api/event/bookings/${bookingId}`));
   }
 
   // public getBookingCount(eventId: number) {

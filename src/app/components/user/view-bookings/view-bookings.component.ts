@@ -1,10 +1,11 @@
 import { BookingService } from './../../../services/booking.service';
 import { EventDetails, EventBooking } from './../../../models';
 import { AdminService } from './../../../services/admin.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StorageService } from 'src/app/services/storage.service';
 import { Router } from '@angular/router';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view-bookings',
@@ -17,7 +18,8 @@ export class ViewBookingsComponent implements OnInit {
     private bookingService: BookingService,
     private _sanitizer: DomSanitizer,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private dialogRef: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -82,14 +84,14 @@ export class ViewBookingsComponent implements OnInit {
       // let event: EventDetails = this.getEventDetailsByEventId(booking.eventId);
       // console.log(event);
       this.adminService
-      .getEvent(booking.eventId)
-      .then((data) => {
-        this.eventList.push(data as EventDetails);
-        console.log(`Getting Event ID ${booking.eventId}: `, event);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+        .getEvent(booking.eventId)
+        .then((data) => {
+          this.eventList.push(data as EventDetails);
+          console.log(`Getting Event ID ${booking.eventId}: `, event);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     });
     console.log('Event List >>>> ', this.eventList);
     // return eventList;
@@ -107,13 +109,50 @@ export class ViewBookingsComponent implements OnInit {
     // console.info("booking list >>> ", this.bookingList)
     // console.info('Deleting booking id: ', bookingId);
 
-    this.bookingService
-      .deleteBookingByBookingId(bookingId)
-      .subscribe((data) => {
-        console.info('Deleted booking id: ', data as string);
-        // this.reload();
-        this.getAllBookingsByUser();
+    this.bookingService.deleteBookingByBookingId(bookingId).then((data) => {
+      console.info('Deleted booking status: ', data);
+      if (Object(data)['statusCode'] == 200) {
+        this.refundFailed = false;
+        this.bookingId = bookingId;
+      } else {
+        this.refundFailed = true;
+        this.errorMessage = Object(data)['message'];
+      }
+      this.openDialog();
+      // window.location.reload();
+      // this.reload();
+      this.getAllBookingsByUser();
+    });
+  }
+  errorMessage!: string;
+  refundFailed!: boolean;
+  bookingId!: string;
 
-      });
+  openDialog() {
+    const dialogRef = this.dialogRef.open(RefundDialog, {
+      width: '500px',
+      data: {
+        errorMessage: this.errorMessage,
+        refundFailed: this.refundFailed,
+      },
+    });
+  }
+}
+@Component({
+  selector: 'refund-dialog',
+  templateUrl: 'refund-dialog.html',
+})
+export class RefundDialog {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      refundFailed: boolean;
+      errorMessage: string;
+      bookingId: string;
+    }
+  ) {}
+
+  reload() {
+    window.location.reload();
   }
 }

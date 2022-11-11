@@ -69,7 +69,7 @@
           mat-raised-button
           color="accent"
           (click)="bookEvent(e)"
-          [disabled]="e.capacity == e.bookingCount"
+          [disabled]="e.capacity == e.bookingCount || this.loading"
           *ngIf="!bookingExists(e)"
         >
           Book Now
@@ -79,9 +79,17 @@
           color="warn"
           (click)="cancelBooking(e)"
           *ngIf="bookingExists(e)"
+          [disabled]="this.loading"
         >
           Cancel Booking
         </button>
+        <!-- <button
+        mat-raised-button
+        color="accent"
+        (click)="openDialog()"
+      >
+        Dialog Test
+      </button> -->
       </mat-card-actions>
     </div>
   </mat-card>

@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +13,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -20,6 +22,7 @@ export class LoginComponent implements OnInit {
     if (this.storageService.isLoggedIn()) {
       this.isLoggedIn = true;
       this.roles = this.storageService.getUser().roles;
+      this.router.navigate(['dashboard']);
     }
   }
 
@@ -28,7 +31,7 @@ export class LoginComponent implements OnInit {
   loginFailed = false;
   errorMessage = '';
   roles: string[] = [];
-  username?:string = (this.username = this.storageService.getUser().username);
+  username?: string = (this.username = this.storageService.getUser().username);
 
   createForm(): FormGroup {
     return this.fb.group({
@@ -58,12 +61,13 @@ export class LoginComponent implements OnInit {
         this.reloadPage();
       },
       error: (err) => {
-        console.error("Error", err);
+        console.error('Error', err);
         this.errorMessage = err.message;
         this.loginFailed = true;
       },
     });
     this.formGroup = this.createForm();
+    
   }
 
   reloadPage(): void {

@@ -1,0 +1,23 @@
+<div>
+  <div class="display-6 text-center m-4">Transaction Successful</div>
+  <div class="row">
+    <div class="col-3"></div>
+    <div
+      class="col-6 text-center d-flex flex-column"
+      *ngIf="this.successfulTransaction"
+    >
+      <h1>You have successfully added ${{ topUpAmount }} to your wallet.</h1>
+      <h1 class="mt-3 mb-3">Current balance: ${{ this.newBalance }}</h1>
+      <p>Transaction ID: {{ this.transactionId }}</p>
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        routerLink="/credits"
+        class="mt-3"
+      >
+        Back To Wallet
+      </button>
+    </div>
+  </div>
+</div>

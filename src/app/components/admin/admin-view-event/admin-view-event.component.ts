@@ -1,11 +1,17 @@
+import { WalletService } from './../../../services/wallet.service';
 import { BookingService } from './../../../services/booking.service';
 import { EventDetails, EventBooking, EmailDetails } from './../../../models';
 import { AdminService } from './../../../services/admin.service';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StorageService } from 'src/app/services/storage.service';
 import { Router } from '@angular/router';
 import { EmailService } from 'src/app/services/email.service';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin-view-event',
@@ -19,25 +25,40 @@ export class AdminViewEventComponent implements OnInit {
     private _sanitizer: DomSanitizer,
     private storageService: StorageService,
     private emailService: EmailService,
-    private router: Router
+    private walletService: WalletService,
+    private router: Router,
+    private dialogRef: MatDialog
   ) {}
-  imagePath!: any;
-  eventList!: EventDetails[];
-  currentEventList!: string;
-
-  bookingList!: EventBooking[];
 
   ngOnInit(): void {
     this.showAllEvents();
     this.getAllBookingsByUser();
     console.info('booking list >>> ', this.bookingList);
+    this.getCurrentCredits();
   }
 
+  imagePath!: any;
+  eventList!: EventDetails[];
+  currentEventList!: string;
+  bookingList!: EventBooking[];
+
+  userId = this.storageService.getUser().id;
+  currentUser = this.storageService.getUser();
+
+  loading: boolean = false;
+  currentCredits!: number;
+  bookingFailed!: boolean;
+  refundFailed!: boolean;
+  transactionType: string = '';
+  errorMessage!: string;
+  emailDetails!: EmailDetails;
+  bookingId!: string;
+
   getAllBookingsByUser() {
-    let userId = this.storageService.getUser().id;
-    this.bookingService.getBookingsByUser(userId).subscribe((data) => {
+    // let userId = this.storageService.getUser().id;
+    this.bookingService.getBookingsByUser(this.userId).subscribe((data) => {
       console.info(
-        'Showing all bookings for user Id ' + userId + ' >>>>>> ',
+        'Showing all bookings for user Id ' + this.userId + ' >>>>>> ',
         data
       );
       this.bookingList = data as EventBooking[];
@@ -138,45 +159,72 @@ export class AdminViewEventComponent implements OnInit {
     return bookingExists;
   }
 
+  getCurrentCredits() {
+    this.walletService.getCredits(this.userId).then((data) => {
+      console.log('Credits retrieved: ', data);
+      this.currentCredits = Object(data)['credits'];
+    });
+  }
+
   bookEvent(event: EventDetails) {
+    this.loading = true;
+    this.transactionType = 'bookEvent';
     const id = event.id;
     console.log('Booking Event Id: ', id);
-    const currentUser = this.storageService.getUser();
-    const userId = currentUser.id;
-    console.log('User Id: ', userId);
+    console.log('User Id: ', this.userId);
     let bookingId!: string;
-    this.bookingService
-      .bookEvent(id, userId)
-      .then((data) => {
-        console.log('Booking data >>>>>>>>>>> ', data);
-        bookingId = data as string;
-
-        let emailDetails: EmailDetails = {
-          recipient: currentUser.email,
-          msgBody: `Dear ${currentUser.username}, \n 
-          Your booking of the event ${event.title} has been confirmed. \n
-          Your booking id is: ${bookingId} \n
-          Thank you for booking with us.\n
-          \n
-          Regards,\n
-          Booking System Admin`,
-          subject: `Your Booking Has Been Confirmed: ${bookingId}`,
-        };
-        this.emailService.sendConfirmationEmail(emailDetails).then((data) => {
-          console.log('Email Details: ', emailDetails);
-          console.log('Email status: ', data);
-          alert(`Email Status:  ${data} \n
-          ${emailDetails.msgBody}`);
-          window.location.reload();
-          this.reload();
+    if (event.price <= this.currentCredits) {
+      this.bookingService
+        .bookEvent(id, this.userId)
+        .then((data) => {
+          console.log('Booking data >>>>>>>>>>> ', data);
+          if (Object(data)['statusCode'] == 200) {
+            bookingId = Object(data)['bookingId'];
+            this.bookingFailed = false;
+            this.emailDetails = {
+              recipient: this.currentUser.email,
+              msgBody: `Dear ${this.currentUser.username}, \n 
+            Your booking of the event ${event.title} has been confirmed. \n
+            Your booking id is: ${bookingId}. \n
+            Thank you for booking with us.\n
+            \n
+            Regards,\n
+            Booking System Admin`,
+              subject: `Your Booking Has Been Confirmed: ${bookingId}`,
+            };
+            this.emailService
+              .sendConfirmationEmail(this.emailDetails)
+              .then((data) => {
+                console.log('Email Details: ', this.emailDetails);
+                console.log('Email status: ', data);
+                // alert(`Email Status:  ${data} \n
+                // ${emailDetails.msgBody}`);
+                this.openDialog();
+                
+                // window.location.reload();
+                // this.reload();
+              });
+          } else {
+            this.bookingFailed = true;
+            this.errorMessage = Object(data)['message'];
+            this.openDialog();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
         });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    } else {
+      this.bookingFailed = true;
+      console.log('Booking failed. Insufficient Credits.');
+      this.errorMessage = 'You do not have sufficient credits in your wallet.';
+      this.openDialog();
+    }
+
   }
 
   cancelBooking(event: EventDetails) {
+    this.loading = true;
+    this.transactionType = 'cancelBooking';
     let bookingId!: string;
     this.bookingList.forEach((e) => {
       // console.info('Deleting booking id: ', e);
@@ -190,10 +238,57 @@ export class AdminViewEventComponent implements OnInit {
 
     this.bookingService
       .deleteBookingByBookingId(bookingId)
-      .subscribe((data) => {
-        console.info('Deleted booking id: ', data as string);
-        window.location.reload();
-        this.reload();
+      .then((data) => {
+        console.info('Deleted booking status: ', data);
+        if (Object(data)["statusCode"] == 200){
+          this.refundFailed = false;
+          this.bookingId = bookingId;
+        } else {
+          this.refundFailed = true;
+          this.errorMessage = Object(data)["message"];
+        }
+        this.openDialog();
+        // window.location.reload();
+        // this.reload();
       });
+
   }
+
+  openDialog() {
+    const dialogRef = this.dialogRef.open(BookingDialog, {
+      width: '500px',
+      data: {
+        bookingFailed: this.bookingFailed,
+        errorMessage: this.errorMessage,
+        emailDetails: this.emailDetails,
+        refundFailed: this.refundFailed,
+        transactionType: this.transactionType,
+        bookingId: this.bookingId,
+      },
+    });
+  }
+}
+
+@Component({
+  selector: 'booking-dialog',
+  templateUrl: 'booking-dialog.html',
+})
+export class BookingDialog {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      bookingFailed: boolean;
+      refundFailed: boolean;
+      errorMessage: string;
+      emailDetails: EmailDetails;
+      transactionType: string;
+      bookingId: string;
+    }
+  ) {}
+
+  reload() {
+    window.location.reload();
+  }
+
+  emailArray = this.data.emailDetails?.msgBody.split('.');
 }

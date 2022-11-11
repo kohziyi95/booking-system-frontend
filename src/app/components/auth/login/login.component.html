@@ -75,8 +75,9 @@
       <a [routerLink]="['/auth/register']" class="text-primary">here</a> to
       register.
     </p>
-    <div class="alert alert-success" *ngIf="isLoggedIn">
+    <div class="alert alert-success text-center" *ngIf="isLoggedIn">
       Logged in as {{ username }}.
+      <p>Redirecting to Dashboard...</p>
     </div>
   </div>
 </div>

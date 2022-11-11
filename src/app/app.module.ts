@@ -29,14 +29,21 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatListModule } from '@angular/material/list';
 import { MatCard, MatCardModule } from '@angular/material/card';
+import {
+  MatDialog,
+  MatDialogModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+} from '@angular/material/dialog';
 
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AdminAddEventComponent } from './components/admin/admin-add-event/admin-add-event.component';
-import { AdminViewEventComponent } from './components/admin/admin-view-event/admin-view-event.component';
+import { AdminViewEventComponent, BookingDialog } from './components/admin/admin-view-event/admin-view-event.component';
 import { AdminEditEventComponent } from './components/admin/admin-edit-event/admin-edit-event.component';
 import { DashboardComponent } from './components/user/dashboard/dashboard.component';
-import { ViewBookingsComponent } from './components/user/view-bookings/view-bookings.component';
+import { ViewBookingsComponent, RefundDialog } from './components/user/view-bookings/view-bookings.component';
 import { CreditsComponent } from './components/user/credits/credits.component';
+import { SuccessComponent } from './components/user/credits/success/success.component';
+import { FailureComponent } from './components/user/credits/failure/failure.component';
 
 const appRoutes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -47,7 +54,9 @@ const appRoutes: Routes = [
   { path: 'event/list', component: AdminViewEventComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'bookings', component: ViewBookingsComponent },
-  // { path: 'credits', component: CreditsComponent },
+  { path: 'credits', component: CreditsComponent },
+  { path: 'credits/success/:amount', component: SuccessComponent },
+  { path: 'credits/failure', component: FailureComponent },
   { path: '**', redirectTo: 'auth/login', pathMatch: 'full' },
 ];
 @NgModule({
@@ -62,6 +71,10 @@ const appRoutes: Routes = [
     DashboardComponent,
     ViewBookingsComponent,
     CreditsComponent,
+    SuccessComponent,
+    FailureComponent,
+    BookingDialog,
+    RefundDialog,
   ],
   imports: [
     BrowserModule,
@@ -86,9 +99,12 @@ const appRoutes: Routes = [
     // NgxMatNativeDateModule,
     NgxMaterialTimepickerModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule,
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -37,10 +37,16 @@ import {
 
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AdminAddEventComponent } from './components/admin/admin-add-event/admin-add-event.component';
-import { AdminViewEventComponent, BookingDialog } from './components/admin/admin-view-event/admin-view-event.component';
+import {
+  AdminViewEventComponent,
+  BookingDialog,
+} from './components/admin/admin-view-event/admin-view-event.component';
 import { AdminEditEventComponent } from './components/admin/admin-edit-event/admin-edit-event.component';
 import { DashboardComponent } from './components/user/dashboard/dashboard.component';
-import { ViewBookingsComponent, RefundDialog } from './components/user/view-bookings/view-bookings.component';
+import {
+  ViewBookingsComponent,
+  RefundDialog,
+} from './components/user/view-bookings/view-bookings.component';
 import { CreditsComponent } from './components/user/credits/credits.component';
 import { SuccessComponent } from './components/user/credits/success/success.component';
 import { FailureComponent } from './components/user/credits/failure/failure.component';

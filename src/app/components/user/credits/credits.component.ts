@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { WalletService } from './../../../services/wallet.service';
 import { StorageService } from './../../../services/storage.service';
 import { Component, OnInit } from '@angular/core';
@@ -14,6 +15,7 @@ export class CreditsComponent implements OnInit {
     private fb: FormBuilder,
     private storageService: StorageService,
     private walletService: WalletService,
+    private router:Router
   ) {}
 
   paymentForm!: FormGroup;
@@ -24,6 +26,7 @@ export class CreditsComponent implements OnInit {
     // const elements = stripe.elements();
     this.invokeStripe();
     this.getCurrentCredits();
+    
   }
 
   createForm() {
@@ -67,24 +70,6 @@ export class CreditsComponent implements OnInit {
     $300: 'price_1M0mmVKdPlDwwpBGrkClXTCn',
   };
 
-  // checkout() {
-  //   const paymentHandler = (<any>window).StripeCheckout.configure({
-  //     key: 'pk_test_51M0gaEKdPlDwwpBGX8h4UfAdrov4Aepw7OIAXf0L9QlWRuFzGk0wOJHUI4CmmjxE9iabbA69PSJk47lsDIoNVWr700ktH1Pbx8',
-  //     locale: 'auto',
-  //     token: function (stripeToken: any) {
-  //       console.log(stripeToken);
-  //       alert('Stripe token generated!');
-  //     },
-  //   });
-
-  //   paymentHandler.open({
-  //     name: 'Booking System',
-  //     description:  `Making Payment for $${this.paymentForm.get('credits')?.value} Credits`,
-  //     amount: this.paymentForm.get('credits')?.value * 100,
-  //   });
-  // }
-
-  // items!: number[];
 
   currentCredits !: number;
 
@@ -133,4 +118,6 @@ export class CreditsComponent implements OnInit {
       }
     }
   }
+
+  
 }

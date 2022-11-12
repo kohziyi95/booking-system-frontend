@@ -13,7 +13,7 @@ export class SuccessComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private storageService: StorageService,
     private walletService: WalletService,
-    private router:Router,
+    private router: Router
   ) {}
   topUpAmount!: number;
   ngOnInit(): void {
@@ -22,14 +22,10 @@ export class SuccessComponent implements OnInit {
     this.addToWallet(this.topUpAmount);
   }
 
-  // @HostListener('window:beforeunload') goToPage() {
-  //   this.router.navigate(['/credits']);
-  // }
-
-  successfulTransaction:boolean = false;
-  newBalance!:number;
+  successfulTransaction: boolean = false;
+  newBalance!: number;
   transactionId!: string;
-  errorMessage!:string;
+  errorMessage!: string;
   currentUser = this.storageService.getUser();
 
   addToWallet(amount: number) {
@@ -38,10 +34,10 @@ export class SuccessComponent implements OnInit {
       .postTopUpTransaction(userId, amount)
       .then((data) => {
         console.log(data);
-        if (Object(data)["statusCode"] == 200){
+        if (Object(data)['statusCode'] == 200) {
           this.successfulTransaction = true;
-          this.newBalance = Object(data)["newCredit"]
-          this.transactionId = Object(data)["transactionId"]
+          this.newBalance = Object(data)['newCredit'];
+          this.transactionId = Object(data)['transactionId'];
         }
       })
       .catch((error) => {

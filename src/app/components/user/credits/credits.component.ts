@@ -98,6 +98,7 @@ export class CreditsComponent implements OnInit {
         priceId = 'N/A';
         break;
     }
+    this.storageService.resetTransactions();
 
     // console.log("Price ID: ", priceId);
 

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 const USER_KEY = 'auth-user';
+const TRANSACTION_KEY = 'transaction-id';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
   constructor() {}
@@ -32,6 +33,22 @@ export class StorageService {
       return true;
     }
 
+    return false;
+  }
+
+  public resetTransactions() {
+    window.sessionStorage.removeItem(TRANSACTION_KEY);
+  }
+
+  public addTransactions(transactionId: string) {
+    window.sessionStorage.setItem(TRANSACTION_KEY, transactionId);
+  }
+
+  public transactionExists(): boolean {
+    const transaction = window.sessionStorage.getItem(TRANSACTION_KEY);
+    if (transaction) {
+      return true;
+    }
     return false;
   }
 }

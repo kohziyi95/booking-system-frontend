@@ -15,13 +15,18 @@ export class SuccessComponent implements OnInit {
     private walletService: WalletService,
     private router: Router
   ) {}
-  topUpAmount!: number;
+
   ngOnInit(): void {
     this.topUpAmount = this.activatedRoute.snapshot.params['amount'];
     console.log('Top up amount: $', this.topUpAmount);
-    this.addToWallet(this.topUpAmount);
+    if (this.storageService.transactionExists()){
+      this.transactionExists = true;
+    } else {
+      this.addToWallet(this.topUpAmount);
+    }
   }
-
+  topUpAmount!: number;
+  transactionExists: boolean = false;
   successfulTransaction: boolean = false;
   newBalance!: number;
   transactionId!: string;
@@ -38,6 +43,7 @@ export class SuccessComponent implements OnInit {
           this.successfulTransaction = true;
           this.newBalance = Object(data)['newCredit'];
           this.transactionId = Object(data)['transactionId'];
+          this.storageService.addTransactions(this.transactionId);
         }
       })
       .catch((error) => {

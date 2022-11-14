@@ -34,12 +34,15 @@ import {
   MatDialogModule,
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
+import {MatTableModule} from '@angular/material/table';
+
 
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AdminAddEventComponent } from './components/admin/admin-add-event/admin-add-event.component';
 import {
   AdminViewEventComponent,
   BookingDialog,
+  EventDialog,
 } from './components/admin/admin-view-event/admin-view-event.component';
 import { AdminEditEventComponent } from './components/admin/admin-edit-event/admin-edit-event.component';
 import { DashboardComponent } from './components/user/dashboard/dashboard.component';
@@ -81,6 +84,7 @@ const appRoutes: Routes = [
     FailureComponent,
     BookingDialog,
     RefundDialog,
+    EventDialog,
   ],
   imports: [
     BrowserModule,
@@ -107,6 +111,7 @@ const appRoutes: Routes = [
     MatListModule,
     MatCardModule,
     MatDialogModule,
+    MatTableModule,
   ],
   providers: [
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },

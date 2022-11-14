@@ -14,20 +14,12 @@
 <div *ngIf="eventList.length == 0">
   <mat-card class="d-flex flex-column justify-content-evenly mt-3 mb-3">
     <mat-card-title class="text-center m-3"> No events found. </mat-card-title>
-    <mat-card-actions class="d-flex justify-content-center m-3">
-      <button
-        mat-raised-button
-        color="primary"
-        [routerLink]="['/admin/event/add']"
-      >
-        Add an Event
-      </button>
-    </mat-card-actions>
+
   </mat-card>
 </div>
 <div *ngFor="let e of eventList">
   <mat-card class="row d-flex flex-row justify-content-evenly mb-3">
-    <div class="col-3 d-flex align-items-center">
+    <div class="col-3 d-flex align-items-center" (click)="showEventDialog(e)">
       <img [src]="getImageFromBase64(e.image)" mat-card-image />
     </div>
     <div class="col-7">
@@ -44,7 +36,7 @@
           {{ e.endTime }}
         </p>
         <p *ngIf="isMultipleEvent(e)">
-          <span class="fw-bold">Time:</span> {{ e.startDate }} to
+          <span class="fw-bold">Date:</span> {{ e.startDate }} to
           {{ e.endDate }}
         </p>
         <p><span class="fw-bold">Price:</span> ${{ e.price.toFixed(2) }}</p>
@@ -93,4 +85,13 @@
       </mat-card-actions>
     </div>
   </mat-card>
+  <mat-card-actions class="d-flex justify-content-center m-3" *ngIf="isAdmin()">
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/admin/event/add']"
+    >
+      Add an Event
+    </button>
+  </mat-card-actions>
 </div>

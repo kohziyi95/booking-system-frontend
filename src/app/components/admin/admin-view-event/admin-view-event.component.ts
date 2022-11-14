@@ -32,7 +32,9 @@ export class AdminViewEventComponent implements OnInit {
 
   ngOnInit(): void {
     this.showAllEvents();
-    this.getAllBookingsByUser();
+    if (this.isUser()) {
+      this.getAllBookingsByUser();
+    }
     console.info('booking list >>> ', this.bookingList);
     this.getCurrentCredits();
   }
@@ -53,6 +55,7 @@ export class AdminViewEventComponent implements OnInit {
   errorMessage!: string;
   emailDetails!: EmailDetails;
   bookingId!: string;
+  roles?: string[] = (this.roles = this.storageService.getUser().roles);
 
   getAllBookingsByUser() {
     // let userId = this.storageService.getUser().id;
@@ -109,8 +112,6 @@ export class AdminViewEventComponent implements OnInit {
       'data:image/jpg;base64,' + base64String
     );
   }
-
-  roles?: string[] = (this.roles = this.storageService.getUser().roles);
 
   isAdmin(): boolean | undefined {
     return this.roles?.includes('ROLE_ADMIN');
@@ -200,7 +201,7 @@ export class AdminViewEventComponent implements OnInit {
                 // alert(`Email Status:  ${data} \n
                 // ${emailDetails.msgBody}`);
                 this.openDialog();
-                
+
                 // window.location.reload();
                 // this.reload();
               });
@@ -219,7 +220,6 @@ export class AdminViewEventComponent implements OnInit {
       this.errorMessage = 'You do not have sufficient credits in your wallet.';
       this.openDialog();
     }
-
   }
 
   cancelBooking(event: EventDetails) {
@@ -236,22 +236,19 @@ export class AdminViewEventComponent implements OnInit {
     // console.info("booking list >>> ", this.bookingList)
     // console.info('Deleting booking id: ', bookingId);
 
-    this.bookingService
-      .deleteBookingByBookingId(bookingId)
-      .then((data) => {
-        console.info('Deleted booking status: ', data);
-        if (Object(data)["statusCode"] == 200){
-          this.refundFailed = false;
-          this.bookingId = bookingId;
-        } else {
-          this.refundFailed = true;
-          this.errorMessage = Object(data)["message"];
-        }
-        this.openDialog();
-        // window.location.reload();
-        // this.reload();
-      });
-
+    this.bookingService.deleteBookingByBookingId(bookingId).then((data) => {
+      console.info('Deleted booking status: ', data);
+      if (Object(data)['statusCode'] == 200) {
+        this.refundFailed = false;
+        this.bookingId = bookingId;
+      } else {
+        this.refundFailed = true;
+        this.errorMessage = Object(data)['message'];
+      }
+      this.openDialog();
+      // window.location.reload();
+      // this.reload();
+    });
   }
 
   openDialog() {
@@ -264,6 +261,19 @@ export class AdminViewEventComponent implements OnInit {
         refundFailed: this.refundFailed,
         transactionType: this.transactionType,
         bookingId: this.bookingId,
+      },
+    });
+  }
+
+  showEventDialog(e: EventDetails) {
+    const dialogRef = this.dialogRef.open(EventDialog, {
+      height: '800px',
+      width: '800px',
+      data: {
+        event: e,
+        remainingSlots: this.remainingSlots(e),
+        loading: this.loading,
+        roles: this.roles,
       },
     });
   }
@@ -291,4 +301,118 @@ export class BookingDialog {
   }
 
   emailArray = this.data.emailDetails?.msgBody.split('.');
+}
+
+export interface BookingElement {
+  bookingId: string;
+  username: string;
+  email: string;
+}
+@Component({
+  selector: 'event-dialog',
+  templateUrl: 'event-dialog.html',
+})
+export class EventDialog implements OnInit {
+  constructor(
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      event: EventDetails;
+      remainingSlots: number;
+      loading: boolean;
+      roles: string[];
+    },
+    private _sanitizer: DomSanitizer,
+    private bookingService: BookingService,
+    private adminService: AdminService
+  ) {}
+
+  ngOnInit(): void {
+    if (this.isAdmin()) {
+      this.getAllBookingsByEvent(this.data.event);
+    }
+  }
+
+  reload() {
+    window.location.reload();
+  }
+
+  isSingleEvent(e: EventDetails): boolean {
+    return e.days == 'single';
+  }
+
+  isMultipleEvent(e: EventDetails): boolean {
+    return e.days == 'multiple';
+  }
+
+  isAdmin(): boolean | undefined {
+    return this.data.roles?.includes('ROLE_ADMIN');
+  }
+
+  isUser(): boolean | undefined {
+    return this.data.roles?.includes('ROLE_USER') && !this.isAdmin();
+  }
+
+  getImageFromBase64(base64String: String) {
+    return this._sanitizer.bypassSecurityTrustResourceUrl(
+      'data:image/jpg;base64,' + base64String
+    );
+  }
+
+  bookingList: EventBooking[] = [];
+  newList: BookingElement[] = [];
+  user!: any;
+
+  populateList() {
+    this.bookingList.forEach((booking) => {
+      this.getUserFromId(booking.userId).then(() => {
+        const user = this.user;
+        console.log('User data', this.user);
+        let username = Object(user)['username'] as string;
+        let email = Object(user)['email'] as string;
+        // console.log('Username', Object(user)['username'] as string);
+        let obj: BookingElement = {
+          bookingId: booking.bookingId,
+          username: username,
+          email: email,
+        };
+        // this.newList.push(obj);
+        this.newList = [...this.newList, obj];
+      });
+
+      // console.log("User data",this.user)
+
+      // let username = Object(user)['username'] as string;
+      // let email = Object(user)['email'] as string
+      // console.log("Username", Object(user)['username'] as string)
+      // let obj:BookingElement = {
+      //   bookingId: booking.bookingId,
+      //   username: username,
+      //   email: email,
+      // };
+      // this.newList.push(obj);
+      // this.newList = [...this.newList, obj];
+    });
+  }
+
+  getAllBookingsByEvent(e: EventDetails) {
+    // let userId = this.storageService.getUser().id;
+    this.bookingService.getBookingsByEvent(e.id).subscribe((data) => {
+      console.info(
+        'Showing all bookings for Event Id ' + e.id + ' >>>>>> ',
+        data
+      );
+      this.bookingList = data as EventBooking[];
+      this.populateList();
+    });
+  }
+  async getUserFromId(id: number) {
+    let user = {};
+    return this.adminService.getUserFromId(id).then((data) => {
+      // console.log('User', data);
+      user = data as any;
+      this.user = user;
+    });
+  }
+
+  displayedColumns: string[] = ['bookingId', 'username', 'email'];
 }

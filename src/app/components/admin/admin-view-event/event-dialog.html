@@ -1,0 +1,106 @@
+<mat-card class="d-flex flex-column justify-content-evenly mt-3 mb-3">
+  <div class="d-flex align-items-center m-3">
+    <img [src]="getImageFromBase64(data.event.image)" mat-card-image />
+  </div>
+  <div>
+    <mat-card-title class="text-capitalize mb-3">
+      {{ data.event.title }}
+    </mat-card-title>
+    <mat-card-content>
+      <p>
+        <span class="fw-bold">Description:</span> {{ data.event.description }}
+      </p>
+      <p *ngIf="isSingleEvent(data.event)">
+        <span class="fw-bold">Date:</span> {{ data.event.date }}
+      </p>
+      <p *ngIf="isSingleEvent(data.event)">
+        <span class="fw-bold">Time:</span> {{ data.event.startTime }} to {{
+        data.event.endTime }}
+      </p>
+      <p *ngIf="isMultipleEvent(data.event)">
+        <span class="fw-bold">Date:</span> {{ data.event.startDate }} to {{
+        data.event.endDate }}
+      </p>
+      <p>
+        <span class="fw-bold">Price:</span> ${{ data.event.price.toFixed(2) }}
+      </p>
+      <p>
+        <span class="fw-bold">Capacity: </span>{{ data.remainingSlots }} / {{
+        data.event.capacity }}
+      </p>
+      <hr class="mt-4 mb-4" *ngIf="isAdmin()">
+      <mat-card-title class="text-capitalize mt-3" *ngIf="isAdmin()">
+        Event Bookings
+      </mat-card-title>
+
+      <table mat-table [dataSource]="this.newList" class="w-100" *ngIf="isAdmin()">
+
+        <ng-container matColumnDef="bookingId">
+          <th mat-header-cell *matHeaderCellDef> Booking Id </th>
+          <td mat-cell *matCellDef="let element"> {{element.bookingId}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> Username </th>
+          <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+    </mat-card-content>
+    <!-- <mat-card-actions *ngIf="isAdmin()" class="">
+    <button mat-raised-button color="accent" (click)="editEvent(data.event.id)">
+      Edit
+    </button>
+    <button mat-raised-button color="warn" (click)="deleteEvent(data.event.id)">
+      Delete
+    </button>
+  </mat-card-actions>
+  <mat-card-actions *ngIf="isUser()">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="bookEvent(data.event)"
+      [disabled]="data.event.capacity == data.event.bookingCount || data.loading"
+      *ngIf="!bookingExists(data.event)"
+    >
+      Book Now
+    </button>
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="cancelBooking(data.event)"
+      *ngIf="bookingExists(data.event)"
+      [disabled]="data.loading"
+    >
+      Cancel Booking
+    </button> -->
+    <!-- <button
+    mat-raised-button
+    color="accent"
+    (click)="openDialog()"
+  >
+    Dialog Test
+  </button> 
+  </mat-card-actions>-->
+
+  </div>
+</mat-card>
+<div class="d-flex justify-content-center">
+  <button
+    mat-raised-button
+    mat-dialog-close
+    color="accent"
+  >
+    Close
+  </button>
+</div>
+
+

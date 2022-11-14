@@ -25,6 +25,12 @@ export class BookingService {
       .pipe();
   }
 
+  public getBookingsByEvent(eventId: number): Observable<EventBooking[]> {
+    return this.http
+      .get<EventBooking[]>(`/api/event/bookings/event/${eventId}`)
+      .pipe();
+  }
+
   public deleteBookingByBookingId(bookingId: string){
     return firstValueFrom(this.http
       .delete(`/api/event/bookings/${bookingId}`));

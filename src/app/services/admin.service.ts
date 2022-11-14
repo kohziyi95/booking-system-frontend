@@ -62,7 +62,9 @@ export class AdminService {
     return firstValueFrom(this.http.get<EventDetails>(`/api/event/${id}`));
   }
 
-
+  public getUserFromId(id:number):Promise<EventDetails>{
+    return firstValueFrom(this.http.get<EventDetails>(`${ADMIN_API}user/${id}`));
+  }
 
 
 

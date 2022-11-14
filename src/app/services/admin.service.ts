@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
-const ADMIN_API = '/api/admin/';
 
+const ADMIN_API = '/api/admin/';
+const EVENT_API = '/api/event/'
 @Injectable({
   providedIn: 'root',
 })
@@ -43,15 +44,15 @@ export class AdminService {
   }
 
   public getSingleEvent():Observable<EventDetails[]>{
-    return (this.http.get<EventDetails[]>('/api/event/single')).pipe();
+    return (this.http.get<EventDetails[]>(`${EVENT_API}single`)).pipe();
   }
 
   public getMultipleEvent():Observable<EventDetails[]>{
-    return (this.http.get<EventDetails[]>('/api/event/multiple')).pipe();
+    return (this.http.get<EventDetails[]>(`${EVENT_API}multiple`)).pipe();
   }
 
   public getAllEvents():Observable<EventDetails[]>{
-    return (this.http.get<EventDetails[]>('/api/event/all')).pipe();
+    return (this.http.get<EventDetails[]>(`${EVENT_API}all`)).pipe();
   }
 
   public deleteEvent(id:number):Observable<EventDetails[]>{
@@ -59,7 +60,7 @@ export class AdminService {
   }
 
   public getEvent(id:number):Promise<EventDetails>{
-    return firstValueFrom(this.http.get<EventDetails>(`/api/event/${id}`));
+    return firstValueFrom(this.http.get<EventDetails>(`${EVENT_API}${id}`));
   }
 
   public getUserFromId(id:number):Promise<EventDetails>{

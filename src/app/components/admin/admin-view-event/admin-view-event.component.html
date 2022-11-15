@@ -85,13 +85,14 @@
       </mat-card-actions>
     </div>
   </mat-card>
-  <mat-card-actions class="d-flex justify-content-center m-3" *ngIf="isAdmin()">
-    <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['/admin/event/add']"
-    >
-      Add an Event
-    </button>
-  </mat-card-actions>
+
+</div>
+<div class="d-flex justify-content-center m-3" *ngIf="isAdmin()">
+  <button
+    mat-raised-button
+    color="primary"
+    [routerLink]="['/admin/event/add']"
+  >
+    Add an Event
+  </button>
 </div>

@@ -35,6 +35,7 @@ import {
   MAT_DIALOG_DEFAULT_OPTIONS,
 } from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
@@ -112,6 +113,7 @@ const appRoutes: Routes = [
     MatCardModule,
     MatDialogModule,
     MatTableModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },

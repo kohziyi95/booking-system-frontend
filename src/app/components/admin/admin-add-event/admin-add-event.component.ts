@@ -69,8 +69,10 @@ export class AdminAddEventComponent implements OnInit {
   eventDetails!: EventDetails;
   formSubmitted: boolean = false;
   errorMessage!: string;
+  loading: boolean = false;
 
   processForm() {
+    this.loading = true;
     console.info(this.newEventForm.value);
     console.info('>>> toUpload: ', this.toUpload.nativeElement.files[0]);
     const image = this.toUpload.nativeElement.files[0];
@@ -95,11 +97,13 @@ export class AdminAddEventComponent implements OnInit {
       .then((result) => {
         console.info('>>> result', result);
         this.eventAdded = true;
+        this.loading = false;
       })
       .catch((error) => {
         console.error('>>error', error);
         this.errorMessage = error;
         this.eventAdded = false;
+        this.loading = false;
       });
     // this.eventTitle = this.newEventForm.get("title")?.value;
     this.newEventForm = this.createForm();

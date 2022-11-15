@@ -150,7 +150,13 @@
         <button mat-raised-button color="accent" class="m-1" type="submit">
           Submit
         </button>
-        <button mat-raised-button color="warn" class="m-1" type="button" routerLink="/event/list">
+        <button
+          mat-raised-button
+          color="warn"
+          class="m-1"
+          type="button"
+          routerLink="/event/list"
+        >
           Cancel
         </button>
       </div>
@@ -178,7 +184,9 @@
         <mat-list-item *ngIf="eventDetails.days == 'multiple'">
           Ending Date: {{ eventDetails.endDate }}
         </mat-list-item>
-        <mat-list-item> Price: ${{ eventDetails.price.toFixed(2) }} </mat-list-item>
+        <mat-list-item>
+          Price: ${{ eventDetails.price.toFixed(2) }}
+        </mat-list-item>
         <mat-list-item>
           Max. Capacity: {{ eventDetails.capacity }}
         </mat-list-item>
@@ -186,10 +194,16 @@
     </div>
     <div
       class="alert alert-danger text-center"
-      *ngIf="eventAdded == false"
+      *ngIf="!eventAdded && !loading"
     >
       <h1>Failed to add event.</h1>
       <h3>{{ errorMessage }}</h3>
+    </div>
+    <div
+      class="alert text-center d-flex justify-content-center"
+      *ngIf="!eventAdded && loading"
+    >
+      <mat-spinner></mat-spinner>
     </div>
     <div class="d-flex justify-content-evenly">
       <button mat-raised-button color="accent" (click)="refreshPage()">
